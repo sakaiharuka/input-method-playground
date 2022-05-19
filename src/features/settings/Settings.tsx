@@ -2,10 +2,15 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { RootState } from '../../app/store'
-import { setHowToShowPreEditText, ON_THE_SPOT, OVER_THE_SPOT, OFF_THE_SPOT} from '../settingsSlice'
+import {
+  setHowToShowPreEditText, setUnitOfConversion,
+  ON_THE_SPOT, OVER_THE_SPOT, OFF_THE_SPOT,
+  SINGLE_WORD, SINGLE_PHRASE, MULTI_PHRASE
+} from '../settingsSlice'
 
 const Settings: React.FC = () => {
   const howToShowPreEditText = useSelector((state: RootState) => state.settings.howToShowPreEditText)
+  const unitOfConversion = useSelector((state: RootState) => state.settings.unitOfConversion)
   const dispatch = useDispatch()
 
   return (
@@ -38,24 +43,30 @@ const Settings: React.FC = () => {
           <label htmlFor="off-the-spot">off-the-spot</label>
         </fieldset>
         <fieldset>
-          <legend>単文節変換 / 連文節変換</legend>
+          <legend>変換単位</legend>
+          <input
+            type="radio"
+            id="single-word"
+            onClick={() => dispatch(setUnitOfConversion(SINGLE_WORD))}
+            checked={unitOfConversion === SINGLE_WORD}
+          />
+          <label htmlFor="single-word">単語変換</label>
           <input
             disabled
             type="radio"
-            id="word"
+            id="single-phrase"
+            onClick={() => dispatch(setUnitOfConversion(SINGLE_PHRASE))}
+            checked={unitOfConversion === SINGLE_PHRASE}
           />
-          <label htmlFor="word">単語変換</label>
-          <input
-            type="radio"
-            id="single"
-          />
-          <label htmlFor="single">単文節変換</label>
+          <label htmlFor="single-phrase">単文節変換</label>
           <input
             disabled
             type="radio"
-            id="multi"
+            id="multi-phrase"
+            onClick={() => dispatch(setUnitOfConversion(MULTI_PHRASE))}
+            checked={unitOfConversion === MULTI_PHRASE}
           />
-          <label htmlFor="multi">連文節変換</label>
+          <label htmlFor="multi-phrase">連文節変換</label>
         </fieldset>
       </form>
     </div>
