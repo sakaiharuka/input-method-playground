@@ -10,8 +10,10 @@ const App: React.FC = () => {
       <header>
         <h1>Input Method Playground</h1>
       </header>
-      <TextBox />
-      <Settings />
+      <div className="container">
+        <Settings />
+        <TextBox />
+      </div>
     </div>
   )
 }

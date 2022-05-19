@@ -57,7 +57,7 @@ const TextBox: React.FC = () => {
           if (romanKey.length > 0) {
             setPreEditText({
               composed: preEditText.composed + roman.slice(0, roman.length - romanKey.length) + romanTable[romanKey][0],
-              composing: ''
+              composing: romanTable[romanKey][1]
             })
           } else {
             setPreEditText({
@@ -74,7 +74,7 @@ const TextBox: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="TextBox">
       <textarea
         data-testid="text-box-textarea"
         onKeyDown={handleInput}

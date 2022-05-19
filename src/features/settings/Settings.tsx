@@ -9,7 +9,7 @@ const Settings: React.FC = () => {
   const dispatch = useDispatch()
 
   return (
-    <div style={{ width: '40em' }}>
+    <div>
       <form>
         <fieldset>
           <legend>未確定文字列の表示方式</legend>
@@ -36,6 +36,26 @@ const Settings: React.FC = () => {
             checked={howToShowPreEditText === OFF_THE_SPOT}
           />
           <label htmlFor="off-the-spot">off-the-spot</label>
+        </fieldset>
+        <fieldset>
+          <legend>単文節変換 / 連文節変換</legend>
+          <input
+            disabled
+            type="radio"
+            id="word"
+          />
+          <label htmlFor="word">単語変換</label>
+          <input
+            type="radio"
+            id="single"
+          />
+          <label htmlFor="single">単文節変換</label>
+          <input
+            disabled
+            type="radio"
+            id="multi"
+          />
+          <label htmlFor="multi">連文節変換</label>
         </fieldset>
       </form>
     </div>

@@ -1,4 +1,8 @@
-textarea {
+.TextBox {
+  padding: 0.5rem;
+}
+
+.TextBox textarea {
   width: 40em;
   resize: none;
   font-size: 1rem;
