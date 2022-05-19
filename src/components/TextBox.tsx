@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 import { searchKey, romanTable } from '../lib/roman'
+import { RootState } from '../app/store'
+import { setHowToShowPreEditText, ON_THE_SPOT, OVER_THE_SPOT, OFF_THE_SPOT} from '../features/settingsSlice'
 
 import './TextBox.css'
 
@@ -10,6 +13,8 @@ type PreEditText = {
 }
 
 const TextBox: React.FC = () => {
+  const howToShowPreEditText = useSelector((state: RootState) => state.settings.howToShowPreEditText)
+
   const [text, setText] = useState('')
   const [preEditText, setPreEditText] = useState<PreEditText>({
     composed: '',
@@ -77,12 +82,14 @@ const TextBox: React.FC = () => {
         rows={10}
         value={text}
       />
-      <div
-        data-testid="pre-edit-text-off-the-spot"
-        className="pre-edit-text-off-the-spot"
-      >
-        {(preEditText.composed + preEditText.composing).length > 0 ? preEditText.composed + preEditText.composing : (<>&nbsp;</>)}
-      </div>
+      {howToShowPreEditText === OFF_THE_SPOT && (
+        <div
+          data-testid="pre-edit-text-off-the-spot"
+          className="pre-edit-text-off-the-spot"
+        >
+          {(preEditText.composed + preEditText.composing).length > 0 ? preEditText.composed + preEditText.composing : (<>&nbsp;</>)}
+        </div>
+      )}
     </div>
   )
 }

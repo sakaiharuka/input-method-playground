@@ -1,6 +1,8 @@
-import React from 'react';
+import React from 'react'
+import TextBox from './components/TextBox'
+import Settings from './features/settings/Settings'
 
-import TextBox from './components/TextBox';
+import './App.css'
 
 const App: React.FC = () => {
   return (
@@ -9,8 +11,9 @@ const App: React.FC = () => {
         <h1>Input Method Playground</h1>
       </header>
       <TextBox />
+      <Settings />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
