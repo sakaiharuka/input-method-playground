@@ -14,3 +14,7 @@
   font-size: 1rem;
   line-height: 1rem;;
 }
+
+.selected-candidate {
+  background-color: cyan;
+}
