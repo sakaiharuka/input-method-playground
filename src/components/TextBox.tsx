@@ -26,12 +26,15 @@ const TextBox: React.FC = () => {
   const [candidates, setCandidates] = useState<string[]>([])
   const [selectedCandidate, setSelectedCandidate] = useState(0)
 
-  const handleInput: React.KeyboardEventHandler = (e) => {
+  const handleInput: React.KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
+    const selectionStart = e.currentTarget.selectionStart
+    const selectionEnd = e.currentTarget.selectionEnd
     if (!showCandidates) {
       if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
         switch (e.code) {
           case 'Enter':
-            setText(text + preEditText.composed + preEditText.composing)
+            const inputText = preEditText.composed + preEditText.composing
+            setText(text.slice(0, selectionStart) + inputText + text.slice(selectionEnd))
             setPreEditText({
               composed: '',
               composing: ''
