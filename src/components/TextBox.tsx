@@ -7,8 +7,6 @@ import { useInputMethod } from '../hooks/useInputMethod'
 import './TextBox.css'
 
 const TextBox: React.FC = () => {
-  const textAreaRef = useRef<HTMLTextAreaElement>(null)
-
   const howToShowPreEditText = useSelector((state: RootState) => state.settings.howToShowPreEditText)
   const {
     preEditText,
@@ -23,6 +21,8 @@ const TextBox: React.FC = () => {
   const [selectionStart, setSelectionStart] = useState(0)
   const [selectionEnd, setSelectionEnd] = useState(0)
 
+  const textAreaRef = useRef<HTMLTextAreaElement>(null)
+
   useEffect(() => {
     // textareaをcontrolled componentにすると　setSelectionRangeが効かない？
     if (textAreaRef.current) {
@@ -35,10 +35,16 @@ const TextBox: React.FC = () => {
 
   const handleInput: React.KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
     if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
-      e.preventDefault()
-      setSelectionStart(e.currentTarget.selectionStart)
-      setSelectionEnd(e.currentTarget.selectionEnd)
-      handleIME(e)
+      switch (e.key) {
+        case 'Backspace':
+          break
+        default:
+          e.preventDefault()
+          setSelectionStart(e.currentTarget.selectionStart)
+          setSelectionEnd(e.currentTarget.selectionEnd)
+          handleIME(e)
+          break
+      }
     }
   }
 

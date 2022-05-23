@@ -20,7 +20,12 @@ export const useInputMethod = () => {
 
   const [finalText, setFinalText] = useState('')
 
+  const clearFinalText = () => {
+    setFinalText('')
+  }
+
   const handleInput: React.KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
+    setFinalText('')
     if (!showCandidates) {
       switch (e.code) {
         case 'Enter':
@@ -57,7 +62,7 @@ export const useInputMethod = () => {
               setSelectedCandidate(0)
             }
           } else {
-            setFinalText(`${finalText}　`)
+            setFinalText('　')
           }
           break
         default:
@@ -104,6 +109,7 @@ export const useInputMethod = () => {
     showCandidates,
     selectedCandidate,
     finalText,
+    clearFinalText,
     handleInput
   }
 }
