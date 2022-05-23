@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import { searchKey, romanTable } from '../lib/roman'
 import { kanaKanji } from '../lib/kanaKanji'
@@ -61,9 +61,12 @@ const TextBox: React.FC = () => {
             const kana = `${preEditText.composed}${preEditText.composing}`
             if (kana.length > 0) {
               e.preventDefault()
-              setShowCandidates(true)
-              setCandidates(kanaKanji(kana))
-              setSelectedCandidate(0)
+              const candidates = kanaKanji(kana)
+              if (candidates.length > 0) {
+                setShowCandidates(true)
+                setCandidates(candidates)
+                setSelectedCandidate(0)
+              }
             } else {
               setText(`${text}　`)
             }
