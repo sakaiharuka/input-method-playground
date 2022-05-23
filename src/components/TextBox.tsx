@@ -1,117 +1,50 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { searchKey, romanTable } from '../lib/roman'
-import { kanaKanji } from '../lib/kanaKanji'
 import { RootState } from '../app/store'
-import { OFF_THE_SPOT} from '../features/settingsSlice'
-
+import { OFF_THE_SPOT } from '../features/settingsSlice'
+import { useInputMethod } from '../hooks/useInputMethod'
 import './TextBox.css'
 
-type PreEditText = {
-  composed: string
-  composing: string
-}
-
 const TextBox: React.FC = () => {
+  const textAreaRef = useRef<HTMLTextAreaElement>(null)
+
   const howToShowPreEditText = useSelector((state: RootState) => state.settings.howToShowPreEditText)
+  const {
+    preEditText,
+    candidates,
+    showCandidates,
+    selectedCandidate,
+    finalText,
+    handleInput: handleIME
+  } = useInputMethod()
 
   const [text, setText] = useState('')
-  const [preEditText, setPreEditText] = useState<PreEditText>({
-    composed: '',
-    composing: ''
-  })
+  const [selectionStart, setSelectionStart] = useState(0)
+  const [selectionEnd, setSelectionEnd] = useState(0)
 
-  const [showCandidates, setShowCandidates] = useState(false)
-  const [candidates, setCandidates] = useState<string[]>([])
-  const [selectedCandidate, setSelectedCandidate] = useState(0)
+  useEffect(() => {
+    // textareaをcontrolled componentにすると　setSelectionRangeが効かない？
+    if (textAreaRef.current) {
+      const caretPos = selectionStart + finalText.length
+      textAreaRef.current.value = text.slice(0, selectionStart) + finalText + text.slice(selectionEnd)
+      textAreaRef.current.setSelectionRange(caretPos, caretPos)
+      setText(text.slice(0, selectionStart) + finalText + text.slice(selectionEnd))
+    }
+  }, [finalText])
 
   const handleInput: React.KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
-    const selectionStart = e.currentTarget.selectionStart
-    const selectionEnd = e.currentTarget.selectionEnd
-    if (!showCandidates) {
-      if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
-        switch (e.code) {
-          case 'Enter':
-            const inputText = preEditText.composed + preEditText.composing
-            setText(text.slice(0, selectionStart) + inputText + text.slice(selectionEnd))
-            setPreEditText({
-              composed: '',
-              composing: ''
-            })
-            break
-          case 'Backspace':
-            if (preEditText.composing.length > 0) {
-              setPreEditText({
-                composed: preEditText.composed,
-                composing: preEditText.composing.slice(0, -1)
-              })
-            } else if (preEditText.composed.length > 0) {
-              setPreEditText({
-                composed: preEditText.composed.slice(0, -1),
-                composing: preEditText.composing
-              })
-            } else {
-              setText(text.slice(0, -1))
-            }
-            break
-          case 'Escape':
-            break
-          case 'Space':
-            const kana = `${preEditText.composed}${preEditText.composing}`
-            if (kana.length > 0) {
-              e.preventDefault()
-              const candidates = kanaKanji(kana)
-              if (candidates.length > 0) {
-                setShowCandidates(true)
-                setCandidates(candidates)
-                setSelectedCandidate(0)
-              }
-            } else {
-              setText(`${text}　`)
-            }
-            break
-          default:
-            e.preventDefault()
-            const roman = preEditText.composing + e.key
-            const romanKey = searchKey(roman)
-            if (romanKey.length > 0) {
-              setPreEditText({
-                composed: preEditText.composed + roman.slice(0, roman.length - romanKey.length) + romanTable[romanKey][0],
-                composing: romanTable[romanKey][1]
-              })
-            } else {
-              setPreEditText({
-                composed: preEditText.composed,
-                composing: roman
-              })
-            }
-        }
-      }
-    } else {
-      switch (e.code) {
-        case 'Space':
-          if (selectedCandidate === candidates.length - 1) {
-            setSelectedCandidate(0)
-          } else {
-            setSelectedCandidate(selectedCandidate + 1)
-          }
-          break
-        case 'Enter':
-          setText(text + candidates[selectedCandidate])
-          setPreEditText({
-            composed: '',
-            composing: ''
-          })
-          setShowCandidates(false)
-          setCandidates([])
-          break
-      }
+    if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+      e.preventDefault()
+      setSelectionStart(e.currentTarget.selectionStart)
+      setSelectionEnd(e.currentTarget.selectionEnd)
+      handleIME(e)
     }
   }
 
-  const handleClick: React.MouseEventHandler = (e) => {
-    console.log(e)
+  const handleClick: React.MouseEventHandler<HTMLTextAreaElement> = (e) => {
+    setSelectionStart(e.currentTarget.selectionStart)
+    setSelectionEnd(e.currentTarget.selectionEnd)
   }
 
   return (
@@ -121,7 +54,7 @@ const TextBox: React.FC = () => {
         onKeyDown={handleInput}
         onClick={handleClick}
         rows={10}
-        value={text}
+        ref={textAreaRef}
       />
       {howToShowPreEditText === OFF_THE_SPOT && (
         <div
