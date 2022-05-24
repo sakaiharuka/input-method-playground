@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
 import getCaretCoordinates from 'textarea-caret'
 
-import { RootState } from '../app/store'
-import { OFF_THE_SPOT, OVER_THE_SPOT } from '../features/settingsSlice'
 import { useInputMethod } from '../hooks/useInputMethod'
+import PreEditText from './PreEditText'
 import './TextBox.css'
 
 type CaretPos = {
@@ -13,7 +11,6 @@ type CaretPos = {
 }
 
 const TextBox: React.FC = () => {
-  const howToShowPreEditText = useSelector((state: RootState) => state.settings.howToShowPreEditText)
   const {
     preEditText,
     candidates,
@@ -78,29 +75,7 @@ const TextBox: React.FC = () => {
           rows={10}
           ref={textAreaRef}
         />
-        {howToShowPreEditText === OVER_THE_SPOT && `${preEditText.composed}${preEditText.composing}`.length > 0 && (
-          <div
-            className='pre-edit-text-over-the-spot'
-            style={{
-              backgroundColor: '#000',
-              color: '#fff',
-              position: 'absolute',
-              top: caretPos.top,
-              left: caretPos.left
-            }}
-          >
-            {(preEditText.composed + preEditText.composing).length > 0 ? preEditText.composed + preEditText.composing : (<>&nbsp;</>)}
-          </div>
-        )}
-        {howToShowPreEditText === OFF_THE_SPOT && (
-          <div
-            data-testid="pre-edit-text-off-the-spot"
-            className="pre-edit-text-off-the-spot"
-            style={{ position: 'static' }}
-          >
-            {(preEditText.composed + preEditText.composing).length > 0 ? preEditText.composed + preEditText.composing : (<>&nbsp;</>)}
-          </div>
-        )}
+        <PreEditText preEditText={preEditText} caretPos={caretPos} />
         {showCandidates && (
           <div style={{ position: 'static' }}>
             <ul>
