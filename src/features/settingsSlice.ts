@@ -14,7 +14,7 @@ export const SINGLE_PHRASE = 1
 export const MULTI_PHRASE = 2
 
 const initialState: SettingsState = {
-  howToShowPreEditText: OFF_THE_SPOT,
+  howToShowPreEditText: OVER_THE_SPOT,
   unitOfConversion: SINGLE_WORD
 }
 

@@ -27,7 +27,6 @@ const Settings: React.FC = () => {
           />
           <label htmlFor="on-the-spot">on-the-spot</label>
           <input
-            disabled
             type="radio"
             id="over-the-spot"
             onClick={() => dispatch(setHowToShowPreEditText(OVER_THE_SPOT))}
